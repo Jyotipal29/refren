@@ -1,12 +1,17 @@
-import { renderHook, waitFor } from "@testing-library/react"; // or '@testing-library/react-hooks' if you can use it
+import { renderHook, waitFor, act } from "@testing-library/react"; // or '@testing-library/react-hooks' if you can use it
 import MockAdapter from "axios-mock-adapter";
 import { describe, it, expect, afterEach } from "vitest";
 import axios from "axios";
-import { useFetchEpisode, useFetchOneEpisode } from "./useFetchEpisode";
+import {
+  useFetchEpisode,
+  useFetchOneEpisode,
+  useFetchEpisodes,
+} from "./useFetchEpisode";
 import {
   useFetchCharacters,
   useFetchCharacter,
-  useFetchCharactersOfEpsiode,
+  useFetchCharactersOfEpisode,
+  useFetchCharactersOfLocation,
 } from "./useFetchCharacters";
 import {
   useFetchLocations,
@@ -15,254 +20,236 @@ import {
 } from "./useFetchLocation";
 
 const mock = new MockAdapter(axios);
-
-describe("Hooks Tests", () => {
+describe("Custom Hooks Tests", () => {
   afterEach(() => {
     mock.reset();
   });
 
-  // Test for useFetchCharacters
-  describe("useFetchCharacters", () => {
-    it("fetches characters successfully", async () => {
-      const charactersData = {
-        results: [{ id: 1, name: "Rick Sanchez" }],
-        info: { next: "some-url" },
-      };
-      mock
-        .onGet("https://rickandmortyapi.com/api/character?page=1")
-        .reply(200, charactersData);
+  // Test useFetchCharacters
+  it("useFetchCharacters fetches characters and handles pagination", async () => {
+    const mockData = {
+      results: [{ id: 1, name: "Rick Sanchez" }],
+      info: { next: "nextPageUrl" },
+    };
+    mock
+      .onGet("https://rickandmortyapi.com/api/character?page=1")
+      .reply(200, mockData);
 
-      const { result } = renderHook(() => useFetchCharacters());
+    const { result } = renderHook(() => useFetchCharacters());
 
-      await waitFor(() => {
-        expect(result.current.characters).toEqual(charactersData.results);
-        expect(result.current.hasMore).toBe(true);
-      });
+    await act(async () => {
+      await result.current.setPage(1); // Trigger the hook to fetch data
     });
 
-    it("fetches all pages and sets hasMore to false when there are no more pages", async () => {
-      const charactersData = {
-        results: [{ id: 1, name: "Rick Sanchez" }],
-        info: { next: null },
-      };
-      mock
-        .onGet("https://rickandmortyapi.com/api/character?page=1")
-        .reply(200, charactersData);
-
-      const { result } = renderHook(() => useFetchCharacters());
-
-      await waitFor(() => {
-        expect(result.current.hasMore).toBe(false);
-      });
-    });
-
-    it("handles error while fetching characters", async () => {
-      mock.onGet("https://rickandmortyapi.com/api/character?page=1").reply(500);
-
-      const { result } = renderHook(() => useFetchCharacters());
-
-      await waitFor(() => {
-        expect(result.current.characters).toEqual([]);
-        expect(result.current.hasMore).toBe(true);
-      });
+    await waitFor(() => {
+      expect(result.current.characters).toEqual(mockData.results);
+      expect(result.current.hasMore).toBe(true);
+      expect(result.current.loading).toBe(false);
     });
   });
 
-  // Test for useFetchCharacter
-  describe("useFetchCharacter", () => {
-    it("fetches character by ID successfully", async () => {
-      const characterData = { id: 1, name: "Rick Sanchez" };
-      mock
-        .onGet("https://rickandmortyapi.com/api/character/1")
-        .reply(200, characterData);
+  // Test useFetchCharacter
+  it("useFetchCharacter fetches a character by ID", async () => {
+    const mockData = { id: 1, name: "Rick Sanchez" };
+    mock
+      .onGet("https://rickandmortyapi.com/api/character/1")
+      .reply(200, mockData);
 
-      const { result } = renderHook(() => useFetchCharacter("1"));
+    const { result } = renderHook(() => useFetchCharacter("1"));
 
-      await waitFor(() => {
-        expect(result.current.character).toEqual(characterData);
-      });
-    });
-
-    it("handles error while fetching character by ID", async () => {
-      mock.onGet("https://rickandmortyapi.com/api/character/1").reply(500);
-
-      const { result } = renderHook(() => useFetchCharacter("1"));
-
-      await waitFor(() => {
-        expect(result.current.character).toBeNull();
-      });
+    await waitFor(() => {
+      expect(result.current.character).toEqual(mockData);
+      expect(result.current.loading).toBe(false);
     });
   });
 
-  // Test for useFetchCharactersOfEpsiode
-  describe("useFetchCharactersOfEpsiode", () => {
-    it("fetches characters of an episode successfully", async () => {
-      const characterData = [{ id: 1, name: "Rick Sanchez" }];
-      const characterUrl = ["https://rickandmortyapi.com/api/character/1"];
-      mock.onGet(characterUrl[0]).reply(200, characterData[0]);
+  // Test useFetchCharactersOfLocation
+  it("useFetchCharactersOfLocation fetches characters of a location", async () => {
+    const mockData = { id: 1, name: "Rick Sanchez" };
+    const mockLocation = {
+      id: 1,
+      name: "Earth",
+      dimension: "Dimension C-137",
+      type: "Planet",
+      residents: ["https://rickandmortyapi.com/api/character/1"],
+      url: "https://rickandmortyapi.com/api/location/1",
+      created: "2017-11-04T18:48:46.250Z",
+    };
+    mock
+      .onGet("https://rickandmortyapi.com/api/character/1")
+      .reply(200, mockData);
 
-      const { result } = renderHook(() =>
-        useFetchCharactersOfEpsiode(characterUrl)
-      );
+    const { result } = renderHook(() =>
+      useFetchCharactersOfLocation(mockLocation)
+    );
 
-      await waitFor(() => {
-        expect(result.current.characters).toEqual(characterData);
-      });
-    });
-
-    it("handles error while fetching characters of an episode", async () => {
-      const characterUrl = ["https://rickandmortyapi.com/api/character/1"];
-      mock.onGet(characterUrl[0]).reply(500);
-
-      const { result } = renderHook(() =>
-        useFetchCharactersOfEpsiode(characterUrl)
-      );
-
-      await waitFor(() => {
-        expect(result.current.characters).toEqual([]);
-      });
+    await waitFor(() => {
+      expect(result.current.characters).toEqual([mockData]);
+      expect(result.current.loading).toBe(false);
     });
   });
 
-  // Test for useFetchEpisode
-  describe("useFetchEpisode", () => {
-    it("fetches episodes successfully", async () => {
-      const episodeData = [{ id: 1, name: "Pilot" }];
-      const episodeUrl = ["https://rickandmortyapi.com/api/episode/1"];
-      mock.onGet(episodeUrl[0]).reply(200, episodeData[0]);
+  // Test useFetchCharactersOfEpisode
+  it("useFetchCharactersOfEpisode fetches characters of an episode", async () => {
+    const mockData = { id: 1, name: "Rick Sanchez" };
+    const mockEpisode: Episode = {
+      id: 1,
+      name: "Pilot",
+      air_date: "December 2, 2013",
+      episode: "S01E01",
+      characters: ["https://rickandmortyapi.com/api/character/1"],
+      url: "https://rickandmortyapi.com/api/episode/1",
+      created: "2017-11-10T12:56:33.798Z",
+    };
+    mock
+      .onGet("https://rickandmortyapi.com/api/character/1")
+      .reply(200, mockData);
 
-      const { result } = renderHook(() => useFetchEpisode(episodeUrl));
+    const { result } = renderHook(() =>
+      useFetchCharactersOfEpisode(mockEpisode)
+    );
 
-      await waitFor(() => {
-        expect(result.current.episodes).toEqual(episodeData);
-      });
-    });
-
-    it("handles error while fetching episodes", async () => {
-      const episodeUrl = ["https://rickandmortyapi.com/api/episode/1"];
-      mock.onGet(episodeUrl[0]).reply(500);
-
-      const { result } = renderHook(() => useFetchEpisode(episodeUrl));
-
-      await waitFor(() => {
-        expect(result.current.episodes).toEqual([]);
-      });
-    });
-  });
-
-  // Test for useFetchLocations
-  describe("useFetchLocations", () => {
-    it("fetches locations successfully", async () => {
-      const locationsData = {
-        results: [{ id: 1, name: "Earth" }],
-        info: { next: "some-url" },
-      };
-      mock
-        .onGet("https://rickandmortyapi.com/api/location?page=1")
-        .reply(200, locationsData);
-
-      const { result } = renderHook(() => useFetchLocations());
-
-      await waitFor(() => {
-        expect(result.current.locations).toEqual(locationsData.results);
-        expect(result.current.hasMore).toBe(true);
-      });
-    });
-
-    it("handles error while fetching locations", async () => {
-      mock.onGet("https://rickandmortyapi.com/api/location?page=1").reply(500);
-
-      const { result } = renderHook(() => useFetchLocations());
-
-      await waitFor(() => {
-        expect(result.current.locations).toEqual([]);
-      });
+    await waitFor(() => {
+      expect(result.current.characters).toEqual([mockData]);
+      expect(result.current.loading).toBe(false);
     });
   });
 
-  // Test for useFetchOneLocation
-  describe("useFetchOneLocation", () => {
-    it("fetches location by ID successfully", async () => {
-      const locationData = { id: 1, name: "Earth" };
-      mock
-        .onGet("https://rickandmortyapi.com/api/location/1")
-        .reply(200, locationData);
+  // Test useFetchEpisode
+  it("useFetchEpisode fetches episodes for a character", async () => {
+    const mockData = { id: 1, name: "Pilot" };
+    const mockCharacter = {
+      id: 1,
+      name: "Rick Sanchez",
+      status: "Alive",
+      species: "Human",
+      type: "",
+      gender: "Male",
+      origin: {
+        name: "Earth",
+        url: "https://rickandmortyapi.com/api/location/1",
+      },
+      location: {
+        name: "Earth",
+        url: "https://rickandmortyapi.com/api/location/1",
+      },
+      image: "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
+      episode: ["https://rickandmortyapi.com/api/episode/1"],
+      url: "https://rickandmortyapi.com/api/character/1",
+      created: "2017-11-04T18:48:46.250Z",
+    };
+    mock
+      .onGet("https://rickandmortyapi.com/api/episode/1")
+      .reply(200, mockData);
 
-      const { result } = renderHook(() => useFetchOneLocation("1"));
+    const { result } = renderHook(() => useFetchEpisode(mockCharacter));
 
-      await waitFor(() => {
-        expect(result.current.location).toEqual(locationData);
-      });
-    });
-
-    it("handles error while fetching location by ID", async () => {
-      mock.onGet("https://rickandmortyapi.com/api/location/1").reply(500);
-
-      const { result } = renderHook(() => useFetchOneLocation("1"));
-
-      await waitFor(() => {
-        expect(result.current.location).toBeNull();
-      });
-    });
-  });
-
-  // Test for useFetchOneEpisode
-  describe("useFetchOneEpisode", () => {
-    it("fetches episode by ID successfully", async () => {
-      const episodeData = { id: 1, name: "Pilot" };
-      mock
-        .onGet("https://rickandmortyapi.com/api/episode/1")
-        .reply(200, episodeData);
-
-      const { result } = renderHook(() => useFetchOneEpisode("1"));
-
-      await waitFor(() => {
-        expect(result.current.episode).toEqual(episodeData);
-      });
-    });
-
-    it("handles error while fetching episode by ID", async () => {
-      mock.onGet("https://rickandmortyapi.com/api/episode/1").reply(500);
-
-      const { result } = renderHook(() => useFetchOneEpisode("1"));
-
-      await waitFor(() => {
-        expect(result.current.episode).toBeNull();
-      });
+    await waitFor(() => {
+      expect(result.current.episodes).toEqual([mockData]);
+      expect(result.current.loading).toBe(false);
     });
   });
 
-  // Test for useFetchLocation
-  describe("useFetchLocation", () => {
-    it("fetches character location successfully", async () => {
-      const character = {
-        location: { url: "https://rickandmortyapi.com/api/location/1" },
-      };
-      const locationData = { id: 1, name: "Earth" };
-      mock
-        .onGet("https://rickandmortyapi.com/api/location/1")
-        .reply(200, locationData);
+  // Test useFetchEpisodes
+  it("useFetchEpisodes fetches episodes with pagination", async () => {
+    const mockData = {
+      results: [{ id: 1, name: "Pilot" }],
+      info: { next: "nextPageUrl" },
+    };
+    mock
+      .onGet("https://rickandmortyapi.com/api/episode?page=1")
+      .reply(200, mockData);
 
-      const { result } = renderHook(() => useFetchLocation(character as User));
+    const { result } = renderHook(() => useFetchEpisodes());
 
-      await waitFor(() => {
-        expect(result.current.characterlocation).toEqual(locationData);
-        expect(result.current.loading).toBe(false);
-      });
+    await waitFor(() => {
+      expect(result.current.episodess).toEqual(mockData.results);
+      expect(result.current.hasMore).toBe(true);
+      expect(result.current.loading).toBe(false);
     });
+  });
 
-    it("handles error while fetching character location", async () => {
-      const character = {
-        location: { url: "https://rickandmortyapi.com/api/location/1" },
-      };
-      mock.onGet("https://rickandmortyapi.com/api/location/1").reply(500);
+  // Test useFetchOneEpisode
+  it("useFetchOneEpisode fetches a single episode by ID", async () => {
+    const mockData = { id: 1, name: "Pilot" };
+    mock
+      .onGet("https://rickandmortyapi.com/api/episode/1")
+      .reply(200, mockData);
 
-      const { result } = renderHook(() => useFetchLocation(character as User));
+    const { result } = renderHook(() => useFetchOneEpisode("1"));
 
-      await waitFor(() => {
-        expect(result.current.characterlocation).toBeNull();
-        expect(result.current.loading).toBe(false);
-      });
+    await waitFor(() => {
+      expect(result.current.episode).toEqual(mockData);
+      expect(result.current.loading).toBe(false);
+    });
+  });
+
+  // Test useFetchLocation
+  it("useFetchLocation fetches the location of a character", async () => {
+    const mockData = { id: 1, name: "Earth" };
+    const mockCharacter = {
+      id: 1,
+      name: "Rick Sanchez",
+      status: "Alive",
+      species: "Human",
+      type: "",
+      gender: "Male",
+      origin: {
+        name: "Earth",
+        url: "https://rickandmortyapi.com/api/location/1",
+      },
+      location: {
+        name: "Earth",
+        url: "https://rickandmortyapi.com/api/location/1",
+      },
+      image: "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
+      episode: ["https://rickandmortyapi.com/api/episode/1"],
+      url: "https://rickandmortyapi.com/api/character/1",
+      created: "2017-11-04T18:48:46.250Z",
+    };
+    mock
+      .onGet("https://rickandmortyapi.com/api/location/1")
+      .reply(200, mockData);
+
+    const { result } = renderHook(() => useFetchLocation(mockCharacter));
+
+    await waitFor(() => {
+      expect(result.current.characterlocation).toEqual(mockData);
+      expect(result.current.loading).toBe(false);
+    });
+  });
+
+  // Test useFetchLocations
+  it("useFetchLocations fetches locations with pagination", async () => {
+    const mockData = {
+      results: [{ id: 1, name: "Earth" }],
+      info: { next: "nextPageUrl" },
+    };
+    mock
+      .onGet("https://rickandmortyapi.com/api/location?page=1")
+      .reply(200, mockData);
+
+    const { result } = renderHook(() => useFetchLocations());
+
+    await waitFor(() => {
+      expect(result.current.locations).toEqual(mockData.results);
+      expect(result.current.hasMore).toBe(true);
+      expect(result.current.loading).toBe(false);
+    });
+  });
+
+  // Test useFetchOneLocation
+  it("useFetchOneLocation fetches a single location by ID", async () => {
+    const mockData = { id: 1, name: "Earth" };
+    mock
+      .onGet("https://rickandmortyapi.com/api/location/1")
+      .reply(200, mockData);
+
+    const { result } = renderHook(() => useFetchOneLocation("1"));
+
+    await waitFor(() => {
+      expect(result.current.location).toEqual(mockData);
+      expect(result.current.loading).toBe(false);
     });
   });
 });

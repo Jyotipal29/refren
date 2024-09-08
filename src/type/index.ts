@@ -25,7 +25,7 @@ declare global {
     id: number;
     air_date: string;
     created: string;
-    spisode: string;
+    episode: string;
     name: string;
     url: string;
     characters: string[];
