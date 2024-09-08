@@ -58,5 +58,6 @@ declare global {
   type SearchProps = {
     search: string;
     setSearch: (search: string) => void;
+    text: string;
   };
 }

@@ -57,7 +57,11 @@ const CharacterList = () => {
   }, [hasMore, loading]);
   return (
     <div className={Style.container}>
-      <SearchBar setSearch={setSearch} search={search} />
+      <SearchBar
+        setSearch={setSearch}
+        search={search}
+        text={"search characters name"}
+      />
 
       <div className={Style.content_wrapper}>
         {/* filter */}

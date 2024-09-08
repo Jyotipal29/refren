@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import CharacterList from "./pages/charcaterlist";
 import Navbar from "./components/navbar";
 import Profile from "./pages/charcaterprofile";
+import EpisodeList from "./pages/episodelist";
+import CharactersOfEpisode from "./pages/characterofepisodes";
 function App() {
   return (
     <>
@@ -10,6 +12,11 @@ function App() {
         <Routes>
           <Route path="/" element={<CharacterList />} />
           <Route path="/profile/:id" element={<Profile />} />
+          <Route path="/episode" element={<EpisodeList />} />
+          <Route
+            path="/characterofepisode/:id"
+            element={<CharactersOfEpisode />}
+          />
         </Routes>
       </Router>
     </>

@@ -1,13 +1,13 @@
 import Style from "./searchbar.module.css";
 
-const SearchBar = ({ setSearch, search }: SearchProps) => {
+const SearchBar = ({ setSearch, search, text }: SearchProps) => {
   return (
     <div className={Style.searchBar}>
       <input
         type="text"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        placeholder="Search Characters name"
+        placeholder={text}
         className={Style.input}
       />
       {/* <button

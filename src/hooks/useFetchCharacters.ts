@@ -62,3 +62,24 @@ export const useFetchCharacter = (id: string) => {
 
   return { character };
 };
+
+
+export const useFetchCharactersOfEpsiode = (characterUrl: string[]) => {
+  const [characters, setCharacters] = useState<User[]>([]);
+  useEffect(() => {
+    const getEpisodes = async () => {
+      const responses = await Promise.all(
+        characterUrl.map((url) => axios.get(url))
+      );
+      const episodeCharacterData = responses.map((res) => res?.data);
+      setCharacters(episodeCharacterData);
+    };
+    if (characterUrl.length > 0) {
+      getEpisodes();
+    }
+  }, [characterUrl]);
+
+  return {
+    characters,
+  };
+};
