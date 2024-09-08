@@ -4,6 +4,8 @@ import Navbar from "./components/navbar";
 import Profile from "./pages/charcaterprofile";
 import EpisodeList from "./pages/episodelist";
 import CharactersOfEpisode from "./pages/characterofepisodes";
+import LocationList from "./pages/locationlist";
+import CharactersOfLocation from "./pages/characteroflocation";
 function App() {
   return (
     <>
@@ -16,6 +18,11 @@ function App() {
           <Route
             path="/characterofepisode/:id"
             element={<CharactersOfEpisode />}
+          />
+          <Route path="/location" element={<LocationList />} />
+          <Route
+            path="/characteroflocations/:id"
+            element={<CharactersOfLocation />}
           />
         </Routes>
       </Router>

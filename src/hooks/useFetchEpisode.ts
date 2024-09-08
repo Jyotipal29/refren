@@ -31,23 +31,21 @@ export const useFetchEpisodes = () => {
       // if (loading) return;
       setLoading(true);
 
-      try {
+      
         const res = await axios.get(
           `https://rickandmortyapi.com/api/episode?page=${page}`
         );
 
         console.log(res, "res");
         setEpisodess((prevEpisode) => [...prevEpisode, ...res.data.results]);
-        setLoading(false);
+
         // If there are no more pages, set `hasMore` to false
         if (res?.data?.info?.next === null) {
           setHasMore(false);
         }
-      } catch (error) {
-        console.error("Error fetching characters:", error);
-      } finally {
+
         setLoading(false);
-      }
+      
     };
     getEpisodes();
   }, [page]);
