@@ -22,8 +22,9 @@ export const useFetchEpisode = (episodeUrl: string[]) => {
 
 export const useFetchEpisodes = () => {
   const [episodess, setEpisodess] = useState<Episode[]>([]);
-  const [hasMore, setHasMore] = useState(false);
   const [page, setPage] = useState(1);
+
+  const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   console.log(page, "page");
   useEffect(() => {
