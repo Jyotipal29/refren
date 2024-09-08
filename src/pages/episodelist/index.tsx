@@ -35,6 +35,8 @@ const EpisodeList = () => {
 
   return (
     <div className={Style.container}>
+      <h1 className={Style.heading}>Episodes of Rick & Morty</h1>
+
       <SearchBar
         search={search}
         setSearch={setSearch}
@@ -42,14 +44,16 @@ const EpisodeList = () => {
       />
       <div className={Style.episode_wrapper}>
         {filteredEpisodes.map((episode: Episode, index: number) => (
-          <Link
-            to={`/characterofepisode/${episode?.id}`}
-            style={{ color: "inherit", textDecoration: "none" }}
-          >
-            <div key={index} className={Style.episode_card}>
-              <p className={Style.episode_card_name}>{episode?.name}</p>
-            </div>
-          </Link>
+          <div key={index} className={Style.episode_card}>
+            <p className={Style.episode_card_name}>{episode?.name}</p>
+
+            <Link
+              to={`/characterofepisode/${episode?.id}`}
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              <button className={Style.button}>View All Characters</button>
+            </Link>
+          </div>
         ))}
       </div>
 

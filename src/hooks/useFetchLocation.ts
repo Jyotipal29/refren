@@ -1,20 +1,27 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-export const useFetchLocation = (locationUrl: string) => {
-  const [location, setLocation] = useState<Locations | null>(null);
+export const useFetchLocation = (character: User) => {
+  console.log(character?.location?.url, "url");
+  const [characterlocation, setCharacterLocation] = useState<Locations | null>(
+    null
+  );
 
   useEffect(() => {
+    // if (!locationUrl) {
+    //   console.error("Invalid location URL");
+    //   return;
+    // }
     const getLocation = async () => {
-      const response = await axios.get(locationUrl);
+      const response = await axios.get(character?.location?.url);
       console.log(response?.data, "res");
-      setLocation(response?.data);
+      setCharacterLocation(response?.data);
     };
 
     getLocation();
-  }, [locationUrl]);
+  }, [character]);
 
   return {
-    location,
+    characterlocation,
   };
 };
 export const useFetchLocations = () => {

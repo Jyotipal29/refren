@@ -57,6 +57,8 @@ const CharacterList = () => {
   }, [hasMore, loading]);
   return (
     <div className={Style.container}>
+      <h1 className={Style.heading}>Characters of Rick & Morty</h1>
+
       <SearchBar
         setSearch={setSearch}
         search={search}
@@ -78,16 +80,22 @@ const CharacterList = () => {
         </div>
         {/* main body */}
         <div className={Style.character_wrapper}>
-          {filteredChar?.map((character: User) => (
-            <Link
-              to={`/profile/${character.id}`}
-              style={{ color: "inherit", textDecoration: "none" }}
-            >
-              <div key={character.id} className={Style.character_card}>
-                <img src={character.image} className={Style.character_image} />
-                <p className={Style.character_name}>{character.name}</p>
-              </div>
-            </Link>
+          {filteredChar?.map((character: User, index: number) => (
+            // <Link
+            //   to={`/profile/${character.id}`}
+            //   style={{ color: "inherit", textDecoration: "none" }}
+            // >
+            <div key={index} className={Style.character_card}>
+              <img src={character.image} className={Style.character_image} />
+              <p className={Style.character_name}>{character.name}</p>
+              <Link
+                to={`/profile/${character.id}`}
+                style={{ color: "inherit", textDecoration: "none" }}
+              >
+                <button className={Style.button}>view profile</button>
+              </Link>
+            </div>
+            // </Link>
           ))}
         </div>
       </div>

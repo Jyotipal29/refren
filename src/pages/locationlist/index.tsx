@@ -30,6 +30,8 @@ const LocationList = () => {
 
   return (
     <div className={Style.container}>
+      <h1 className={Style.heading}>Locations of Rick & Morty</h1>
+
       <SearchBar
         search={search}
         setSearch={setSearch}
@@ -37,14 +39,15 @@ const LocationList = () => {
       />
       <div className={Style.episode_wrapper}>
         {filteredLocations.map((location: Locations, index: number) => (
-          <Link
-            to={`/characteroflocations/${location?.id}`}
-            style={{ color: "inherit", textDecoration: "none" }}
-          >
-            <div key={index} className={Style.episode_card}>
-              <p className={Style.episode_card_name}>{location?.name}</p>
-            </div>
-          </Link>
+          <div key={index} className={Style.episode_card}>
+            <p className={Style.episode_card_name}>{location?.name}</p>
+            <Link
+              to={`/characteroflocations/${location?.id}`}
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              <button className={Style.button}>View All Characters</button>
+            </Link>
+          </div>
         ))}
       </div>
     </div>

@@ -9,10 +9,9 @@
 
 
 .character_wrapper{
-
 display: grid;
 grid-template-columns: repeat(3,1fr);
-  flex-grow: 1;
+flex-grow: 1;
 gap:10px;
 }
 
@@ -27,4 +26,26 @@ padding:10px 0px;
 .character_image{
 width:200px;
 border-radius: 50%;
+}
+
+.sub_heading{
+  text-align: center;
+  font-size: 24px;
+}
+
+.location_name_warpper{
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.button{
+  background-color: blue;
+  color:white;
+  padding:10px 30px;
+  font-size: 18px;
+  outline: none;
+  border:none;
+  border-radius: 5px;
+  cursor: pointer;
 }

@@ -1,6 +1,6 @@
 .container{
     max-width:1440px ;
-    margin: 100px auto;
+    margin: 50px auto;
     display: flex;
     padding: 20px;
     flex-direction: column;
@@ -31,6 +31,7 @@ align-items: center;
 flex-direction: column;
 box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 padding:10px 0px;
+border-radius: 10px;
 }
 
 .character_image{
@@ -39,5 +40,21 @@ border-radius: 50%;
 }
 
 .character_name{
+font-size: 20px;
+  font-weight: bold;
+}
 
+.heading{
+  text-align: center;
+}
+
+.button{
+  background-color: blue;
+  color:white;
+  padding:10px 30px;
+  font-size: 18px;
+  outline: none;
+  border:none;
+  border-radius: 5px;
+  cursor: pointer;
 }

@@ -28,3 +28,33 @@ padding:10px 0px;
 width:200px;
 border-radius: 50%;
 }
+
+.location_name_warpper{
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.name_image{
+  width:50px;
+}
+
+.sub_heading{
+  text-align: center;
+  font-size: 24px;
+}
+.character_name{
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.button{
+  background-color: blue;
+  color:white;
+  padding:10px 30px;
+  font-size: 18px;
+  outline: none;
+  border:none;
+  border-radius: 5px;
+  cursor: pointer;
+}

@@ -12,23 +12,24 @@ const CharactersOfEpisode = () => {
   console.log(characters);
   return (
     <div className={Style.container}>
-      <div>
-        <h1>{episode?.name}</h1>
+      <div className={Style.location_name_warpper}>
+        <h1 className={Style.location_name}>{episode?.name}</h1>
       </div>
       <div>
-        <p>all the charactesr of this episode</p>
+        <p className={Style.sub_heading}>all the charactesr of this episode</p>
 
         <div className={Style.character_wrapper}>
           {characters.map((character: User) => (
-            <Link
-              to={`/profile/${character.id}`}
-              style={{ color: "inherit", textDecoration: "none" }}
-            >
-              <div key={character.id} className={Style.character_card}>
-                <img src={character.image} className={Style.character_image} />
-                <p className={Style.character_name}>{character.name}</p>
-              </div>
-            </Link>
+            <div key={character.id} className={Style.character_card}>
+              <img src={character.image} className={Style.character_image} />
+              <p className={Style.character_name}>{character.name}</p>
+              <Link
+                to={`/profile/${character.id}`}
+                style={{ color: "inherit", textDecoration: "none" }}
+              >
+                <button className={Style.button}>view profile</button>
+              </Link>
+            </div>
           ))}
         </div>
       </div>
