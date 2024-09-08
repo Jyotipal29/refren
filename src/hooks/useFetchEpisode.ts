@@ -2,21 +2,30 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 export const useFetchEpisode = (episodeUrl: string[]) => {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     const getEpisodes = async () => {
-      const responses = await Promise.all(
-        episodeUrl.map((url) => axios.get(url))
-      );
-      const episodeData = responses.map((res) => res?.data);
-      setEpisodes(episodeData);
+      try {
+        setLoading(true);
+        const responses = await Promise.all(
+          episodeUrl?.map((url) => axios.get(url))
+        );
+        const episodeData = responses?.map((res) => res?.data);
+        setEpisodes(episodeData);
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+      }
     };
-    if (episodeUrl.length > 0) {
+    if (episodeUrl?.length > 0) {
       getEpisodes();
     }
   }, [episodeUrl]);
 
   return {
     episodes,
+    loading,
   };
 };
 
@@ -25,14 +34,15 @@ export const useFetchEpisodes = () => {
   const [page, setPage] = useState(1);
 
   const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   console.log(page, "page");
   useEffect(() => {
     const getEpisodes = async () => {
-      // if (loading) return;
-      setLoading(true);
+      if (loading) return;
 
-      
+      try {
+        setLoading(true);
+
         const res = await axios.get(
           `https://rickandmortyapi.com/api/episode?page=${page}`
         );
@@ -44,9 +54,11 @@ export const useFetchEpisodes = () => {
         if (res?.data?.info?.next === null) {
           setHasMore(false);
         }
-
         setLoading(false);
-      
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+      }
     };
     getEpisodes();
   }, [page]);
@@ -57,30 +69,25 @@ export const useFetchEpisodes = () => {
     hasMore,
     loading,
   };
-
-  // useEffect(() => {
-  //   const getEpisodes = async () => {
-  //     const res = await axios.get("https://rickandmortyapi.com/api/episode");
-  //     setEpisodes(res.data.results);
-  //   };
-  //   getEpisodes();
-  // }, []);
-
-  // return {
-  //   episodes,
-  // };
 };
 
 export const useFetchOneEpisode = (id: string) => {
   const [episode, setEpisode] = useState<Episode | null>(null);
-
+  const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     const getEpisode = async () => {
-      const res = await axios.get(
-        `https://rickandmortyapi.com/api/episode/${id}`
-      );
+      try {
+        setLoading(true);
+        const res = await axios.get(
+          `https://rickandmortyapi.com/api/episode/${id}`
+        );
 
-      setEpisode(res.data);
+        setEpisode(res?.data);
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+      }
     };
 
     getEpisode();
@@ -88,5 +95,6 @@ export const useFetchOneEpisode = (id: string) => {
 
   return {
     episode,
+    loading,
   };
 };

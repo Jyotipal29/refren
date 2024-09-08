@@ -3,12 +3,13 @@ import Style from "./characterofepisode.module.css";
 import { useParams, Link } from "react-router-dom";
 import { useFetchOneEpisode } from "../../hooks/useFetchEpisode";
 import { useFetchCharactersOfEpsiode } from "../../hooks/useFetchCharacters";
+import Spinner from "../../components/spinner";
 const CharactersOfEpisode = () => {
   const { id } = useParams();
   const { episode } = useFetchOneEpisode(id as string);
 
   const characterUrl = episode?.characters || [];
-  const { characters } = useFetchCharactersOfEpsiode(characterUrl);
+  const { characters, loading } = useFetchCharactersOfEpsiode(characterUrl);
   console.log(characters);
   return (
     <div className={Style.container}>
@@ -17,6 +18,8 @@ const CharactersOfEpisode = () => {
       </div>
       <div>
         <p className={Style.sub_heading}>all the charactesr of this episode</p>
+
+        <Spinner loading={loading} />
 
         <div className={Style.character_wrapper}>
           {characters.map((character: User) => (

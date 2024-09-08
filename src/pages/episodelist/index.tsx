@@ -3,6 +3,7 @@ import SearchBar from "../../components/searchbar";
 import { useFetchEpisodes } from "../../hooks/useFetchEpisode";
 import Style from "./episodelist.module.css";
 import { Link } from "react-router-dom";
+import Spinner from "../../components/spinner";
 const EpisodeList = () => {
   const [search, setSearch] = useState("");
   const { episodess, setPage, hasMore, loading } = useFetchEpisodes();
@@ -42,6 +43,8 @@ const EpisodeList = () => {
         setSearch={setSearch}
         text={"search episodes here"}
       />
+      <Spinner loading={loading} />
+
       <div className={Style.episode_wrapper}>
         {filteredEpisodes.map((episode: Episode, index: number) => (
           <div key={index} className={Style.episode_card}>

@@ -4,9 +4,10 @@ import { useFetchLocation } from "../../hooks/useFetchLocation";
 import Style from "./profile.module.css";
 import { useParams } from "react-router-dom";
 import LocationSvg from "../../assets/location.svg";
+import Spinner from "../../components/spinner";
 const Profile = () => {
   const { id } = useParams();
-  const { character } = useFetchCharacter(id as string);
+  const { character, loading } = useFetchCharacter(id as string);
 
   const episodeUrl = character?.episode || [];
 
@@ -17,6 +18,8 @@ const Profile = () => {
 
   return (
     <div className={Style.container}>
+      <Spinner loading={loading} />
+
       <div className={Style.profile_wrapper}>
         <div className={Style.character_image}>
           <img

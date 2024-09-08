@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 export const useFetchLocation = (character: User) => {
-  console.log(character?.location?.url, "url");
   const [characterlocation, setCharacterLocation] = useState<Locations | null>(
     null
   );
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    // if (!locationUrl) {
-    //   console.error("Invalid location URL");
-    //   return;
-    // }
     const getLocation = async () => {
-      const response = await axios.get(character?.location?.url);
-      console.log(response?.data, "res");
-      setCharacterLocation(response?.data);
+      try {
+        setLoading(true);
+        const response = await axios.get(character?.location?.url);
+        setCharacterLocation(response?.data);
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+      }
     };
 
     getLocation();
@@ -22,6 +25,7 @@ export const useFetchLocation = (character: User) => {
 
   return {
     characterlocation,
+    loading,
   };
 };
 export const useFetchLocations = () => {
@@ -33,21 +37,26 @@ export const useFetchLocations = () => {
     const getLocation = async () => {
       if (loading) return; // Prevent duplicate requests
 
-      setLoading(true);
-      const response = await axios.get(
-        `https://rickandmortyapi.com/api/location?page=${page}`
-      );
-      // setLocations(response?.data?.results);
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `https://rickandmortyapi.com/api/location?page=${page}`
+        );
+        // setLocations(response?.data?.results);
 
-      setLocations((prevLocation) => [
-        ...prevLocation,
-        ...response.data.results,
-      ]);
+        setLocations((prevLocation) => [
+          ...prevLocation,
+          ...response.data.results,
+        ]);
 
-      if (response.data.info.next === null) {
-        setHasMore(false);
+        if (response?.data?.info?.next === null) {
+          setHasMore(false);
+        }
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     getLocation();
@@ -63,14 +72,21 @@ export const useFetchLocations = () => {
 
 export const useFetchOneLocation = (id: string) => {
   const [location, setLocation] = useState<Locations | null>(null);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const getEpisode = async () => {
-      const res = await axios.get(
-        `https://rickandmortyapi.com/api/location/${id}`
-      );
+      try {
+        setLoading(true);
+        const res = await axios.get(
+          `https://rickandmortyapi.com/api/location/${id}`
+        );
 
-      setLocation(res.data);
+        setLocation(res?.data);
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+      }
     };
 
     getEpisode();
@@ -78,5 +94,6 @@ export const useFetchOneLocation = (id: string) => {
 
   return {
     location,
+    loading,
   };
 };

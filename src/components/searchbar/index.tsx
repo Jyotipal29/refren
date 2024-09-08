@@ -10,12 +10,6 @@ const SearchBar = ({ setSearch, search, text }: SearchProps) => {
         placeholder={text}
         className={Style.input}
       />
-      {/* <button
-        //   onClick={handleSearch}
-        className={Style.button}
-      >
-        Search
-      </button> */}
     </div>
   );
 };

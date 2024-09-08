@@ -4,21 +4,12 @@ import { useEffect, useState } from "react";
 export const useFetchCharacters = () => {
   const [characters, setCharacters] = useState<User[]>([]);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true); // To track if there's more data to load
-  // useEffect(() => {
-  //   const getCharacters = async () => {
-  //     const res = await axios.get("https://rickandmortyapi.com/api/character");
-  //     console.log(res.data.results);
-  //     setCharacters(res.data.results);
-  //   };
-
-  //   getCharacters();
-  // }, []);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
     const getCharacters = async () => {
-      if (loading) return; // Prevent duplicate requests
+      if (loading) return;
 
       setLoading(true);
       try {
@@ -31,7 +22,7 @@ export const useFetchCharacters = () => {
         ]);
 
         // If there are no more pages, set `hasMore` to false
-        if (res.data.info.next === null) {
+        if (res?.data?.info?.next === null) {
           setHasMore(false);
         }
       } catch (error) {
@@ -48,38 +39,55 @@ export const useFetchCharacters = () => {
 };
 export const useFetchCharacter = (id: string) => {
   const [character, setCharacter] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const getCharacterById = async (id: string) => {
-      const res = await axios.get(
-        `https://rickandmortyapi.com/api/character/${id}`
-      );
+      try {
+        setLoading(true);
+        const res = await axios.get(
+          `https://rickandmortyapi.com/api/character/${id}`
+        );
 
-      setCharacter(res.data);
+        setCharacter(res?.data);
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+      }
     };
     getCharacterById(id);
   }, [id]);
 
-  return { character };
+  return { character, loading };
 };
-
 
 export const useFetchCharactersOfEpsiode = (characterUrl: string[]) => {
   const [characters, setCharacters] = useState<User[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
   useEffect(() => {
     const getEpisodes = async () => {
-      const responses = await Promise.all(
-        characterUrl.map((url) => axios.get(url))
-      );
-      const episodeCharacterData = responses.map((res) => res?.data);
-      setCharacters(episodeCharacterData);
+      try {
+        setLoading(true);
+        const responses = await Promise.all(
+          characterUrl?.map((url) => axios.get(url))
+        );
+        const episodeCharacterData = responses?.map((res) => res?.data);
+        setCharacters(episodeCharacterData);
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+      }
     };
-    if (characterUrl.length > 0) {
+    if (characterUrl?.length > 0) {
       getEpisodes();
     }
   }, [characterUrl]);
 
   return {
     characters,
+    loading,
   };
 };

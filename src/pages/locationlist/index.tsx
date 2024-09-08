@@ -3,6 +3,7 @@ import Style from "./locationlist.module.css";
 import SearchBar from "../../components/searchbar";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Spinner from "../../components/spinner";
 const LocationList = () => {
   const { locations, setPage, hasMore, loading } = useFetchLocations();
   const [search, setSearch] = useState("");
@@ -37,6 +38,8 @@ const LocationList = () => {
         setSearch={setSearch}
         text={"search locations here"}
       />
+      <Spinner loading={loading} />
+
       <div className={Style.episode_wrapper}>
         {filteredLocations.map((location: Locations, index: number) => (
           <div key={index} className={Style.episode_card}>

@@ -4,7 +4,7 @@ import SearchBar from "../../components/searchbar";
 import FilterBar from "../../components/filterbar";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import Spinner from "../../components/spinner";
 const CharacterList = () => {
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [search, setSearch] = useState<string>("");
@@ -64,6 +64,8 @@ const CharacterList = () => {
         search={search}
         text={"search characters name"}
       />
+
+      <Spinner loading={loading} />
 
       <div className={Style.content_wrapper}>
         {/* filter */}

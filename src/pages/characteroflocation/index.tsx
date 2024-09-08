@@ -4,13 +4,13 @@ import { useParams, Link } from "react-router-dom";
 import { useFetchCharactersOfEpsiode } from "../../hooks/useFetchCharacters";
 import { useFetchOneLocation } from "../../hooks/useFetchLocation";
 import LocationSvg from "../../assets/location.svg";
-
+import Spinner from "../../components/spinner";
 const CharactersOfLocation = () => {
   const { id } = useParams();
   const { location } = useFetchOneLocation(id as string);
 
   const characterUrl = location?.residents || [];
-  const { characters } = useFetchCharactersOfEpsiode(characterUrl);
+  const { characters, loading } = useFetchCharactersOfEpsiode(characterUrl);
   console.log(characters);
   return (
     <div className={Style.container}>
@@ -24,6 +24,7 @@ const CharactersOfLocation = () => {
       </div>
       <div>
         <p className={Style.sub_heading}>all the characters of this location</p>
+        <Spinner loading={loading} />
 
         <div className={Style.character_wrapper}>
           {characters.map((character: User) => (
