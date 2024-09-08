@@ -35,7 +35,7 @@ const LocationList = () => {
       <SearchBar
         search={search}
         setSearch={setSearch}
-        text={"search locations here"}
+        text={"Search locations here"}
       />
       <Spinner loading={loading} />
 

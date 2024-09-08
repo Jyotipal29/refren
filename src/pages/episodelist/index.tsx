@@ -38,7 +38,7 @@ const EpisodeList = () => {
       <SearchBar
         search={search}
         setSearch={setSearch}
-        text={"search episodes here"}
+        text={"Search episodes here"}
       />
       <Spinner loading={loading} />
 

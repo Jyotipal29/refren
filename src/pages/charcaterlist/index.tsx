@@ -57,7 +57,7 @@ const CharacterList = () => {
       <SearchBar
         setSearch={setSearch}
         search={search}
-        text={"search characters name"}
+        text={"Search characters name"}
       />
 
       <Spinner loading={loading} />
