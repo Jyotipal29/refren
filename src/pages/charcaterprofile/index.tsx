@@ -9,12 +9,10 @@ const Profile = () => {
   const { id } = useParams();
   const { character, loading } = useFetchCharacter(id as string);
 
-  const episodeUrl = character?.episode || [];
-
+  
   const { characterlocation } = useFetchLocation(character as User);
-  const { episodes } = useFetchEpisode(episodeUrl);
 
-  console.log(characterlocation);
+  const { episodes } = useFetchEpisode(character as User);
 
   return (
     <div className={Style.container}>

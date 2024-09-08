@@ -32,8 +32,8 @@
 .location_wrapper{
     display: flex;
     align-items: center;
-    margin:20px 0px;
-    padding:20px 0px;
+    margin:20px 5px;
+    padding:20px 5px;
 }
 .character_info{
 padding:0px 20px;
@@ -54,7 +54,8 @@ padding:0px 20px;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     justify-content: center;
     align-items: center;
-    background-color: blue;
+    background-color: #06b6d4;
+    /* background-color: blue; */
     color:white;
     padding: 0px 20px;
     border-radius: 10px;
@@ -75,6 +76,8 @@ padding:0px 20px;
     color:#6b6666;
     display: flex;
     flex-wrap: wrap;
+    padding:5px;
+
 }
 .character_other_info{
 display: flex;
@@ -83,10 +86,65 @@ margin-top: 20px;
 }
 
 .pill{
-    background-color: blue;
+    background-color: #06b6d4;
+    /* background-color: blue; */
     color:white;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     padding:10px 40px;
     border-radius: 10px;
     font-size: 20px;
+}
+
+
+@media (max-width: 769px) {
+  /* Styles for desktop and larger devices */
+
+.profile_wrapper{
+flex-direction: column;
+align-items: start;
+ }
+
+ .character_image{
+    width: 100%;
+    padding:0px;
+    height: 250px;
+
+ }
+ .image{
+    width: 100%;
+ }
+ .profile_wrapper{
+    gap:5px;
+ }
+ .character_info{
+    padding: 0px 10px;
+    padding-bottom: 10px;
+ }
+ .location_wrapper{
+      padding:0;
+      margin:0;
+ }
+ .character_name{
+    font-size: 25px;
+}
+.location_name{
+    font-size: 18px;
+    padding:5px;
+}
+.pill{
+    padding:5px 10px;
+    font-size: 16px;
+}
+.card{
+    
+    padding: 0px 10px;
+    border-radius: 10px;
+}
+.card_name{
+    font-size: 14px;
+    /* font-weight: bold; */
+}
+.heading{
+    font-size: 20px;
+}
 }

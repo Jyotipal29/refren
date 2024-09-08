@@ -62,7 +62,7 @@ export const useFetchCharacter = (id: string) => {
   return { character, loading };
 };
 
-export const useFetchCharactersOfEpsiode = (characterUrl: string[]) => {
+export const useFetchCharactersOfLocation = (location: Locations) => {
   const [characters, setCharacters] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -70,21 +70,80 @@ export const useFetchCharactersOfEpsiode = (characterUrl: string[]) => {
     const getEpisodes = async () => {
       try {
         setLoading(true);
-        const responses = await Promise.all(
-          characterUrl?.map((url) => axios.get(url))
-        );
-        const episodeCharacterData = responses?.map((res) => res?.data);
-        setCharacters(episodeCharacterData);
-        setLoading(false);
+        if (
+          location &&
+          location?.residents &&
+          location?.residents?.length > 0
+        ) {
+          const characterUrl = location?.residents;
+          const characterIds = characterUrl?.map((url) => {
+            const parts = url?.split("/");
+            return parseInt(parts[parts?.length - 1], 10);
+          });
+
+          const res = await axios.get(
+            `https://rickandmortyapi.com/api/character/${characterIds}`
+          );
+
+          if (!Array.isArray(res?.data)) {
+            setCharacters([res?.data]);
+          } else {
+            setCharacters(res?.data);
+          }
+
+          setLoading(false);
+        }
       } catch (err) {
         console.log(err);
         setLoading(false);
       }
     };
-    if (characterUrl?.length > 0) {
+    if (location?.residents?.length > 0) {
       getEpisodes();
     }
-  }, [characterUrl]);
+  }, [location]);
+
+  return {
+    characters,
+    loading,
+  };
+};
+export const useFetchCharactersOfEpisode = (episode: Episode) => {
+  const [characters, setCharacters] = useState<User[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const getEpisodes = async () => {
+      try {
+        setLoading(true);
+        if (episode && episode?.characters && episode?.characters?.length > 0) {
+          const characterUrl = episode?.characters;
+          const characterIds = characterUrl?.map((url) => {
+            const parts = url?.split("/");
+            return parseInt(parts[parts?.length - 1], 10);
+          });
+
+          const res = await axios.get(
+            `https://rickandmortyapi.com/api/character/${characterIds}`
+          );
+
+          if (!Array.isArray(res?.data)) {
+            setCharacters([res?.data]);
+          } else {
+            setCharacters(res?.data);
+          }
+
+          setLoading(false);
+        }
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+      }
+    };
+    if (episode?.characters?.length > 0) {
+      getEpisodes();
+    }
+  }, [episode]);
 
   return {
     characters,

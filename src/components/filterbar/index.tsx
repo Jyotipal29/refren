@@ -1,4 +1,6 @@
+import { useState } from "react";
 import styles from "./filter.module.css";
+import closeIcon from "../../assets/close.svg";
 
 const FilterBar: React.FC<FilterProps> = ({
   setSelectedSpecies,
@@ -8,6 +10,8 @@ const FilterBar: React.FC<FilterProps> = ({
   selectedGender,
   selectedSpecies,
 }: FilterProps) => {
+  const [showFilter, toggleShowFilter] = useState(false);
+
   const statuses: FilterOption[] = [
     { label: "Alive", value: "alive" },
     { label: "Dead", value: "dead" },
@@ -26,88 +30,81 @@ const FilterBar: React.FC<FilterProps> = ({
     { label: "Unknown", value: "unknown" },
   ];
 
-  // const types: FilterOption[] = [
-  //   { label: "Human", value: "human" },
-  //   { label: "Humanoid", value: "humanoid" },
-  //   { label: "Animal", value: "animal" },
-  // ];
+  const showFilterClickHandler = () => {
+    toggleShowFilter(true);
+  };
+  const closeFilterClickHandler = () => {
+    toggleShowFilter(false);
+  };
 
   return (
-    <div className={styles.filterBar}>
-      <div className={styles.filterCategory}>
-        <h3>Status</h3>
-        {statuses.map((option) => (
-          <label key={option.value} className={styles.filterOption}>
-            <input
-              type="radio"
-              name="status"
-              value={option.value}
-              checked={selectedStatus === option.value}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-            />
-            {option.label}
-          </label>
-        ))}
+    <>
+      <button className={styles.filterButton} onClick={showFilterClickHandler}>
+        Filter
+      </button>
+      <div
+        className={`${styles.filterBar} ${
+          showFilter ? styles.showMobileFilter : ""
+        }`}
+      >
+        <div className={styles.filterHeader}>
+          <p>Filters</p>
+          <button
+            className={styles.closeIcon}
+            onClick={closeFilterClickHandler}
+          >
+            <img src={closeIcon} alt="close" />
+          </button>
+        </div>
+        <div className={styles.filterCategory}>
+          <h3>Status</h3>
+          {statuses?.map((option) => (
+            <label key={option?.value} className={styles.filterOption}>
+              <input
+                type="radio"
+                name="status"
+                value={option?.value}
+                checked={selectedStatus === option?.value}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+              />
+              {option?.label}
+            </label>
+          ))}
+        </div>
+
+        <div className={styles.filterCategory}>
+          <h3>Gender</h3>
+          {genders?.map((option) => (
+            <label key={option?.value} className={styles.filterOption}>
+              <input
+                type="radio"
+                name="gender"
+                value={option?.value}
+                checked={selectedGender === option?.value}
+                onChange={(e) => setSelectedGender(e.target.value)}
+              />
+              {option?.label}
+            </label>
+          ))}
+        </div>
+
+        <div className={styles.filterCategory}>
+          <h3>Species</h3>
+          {species?.map((option) => (
+            <label key={option?.value} className={styles.filterOption}>
+              <input
+                type="radio"
+                name="species"
+                value={option?.value}
+                checked={selectedSpecies === option?.value}
+                onChange={(e) => setSelectedSpecies(e.target.value)}
+              />
+              {option?.label}
+            </label>
+          ))}
+        </div>
       </div>
-
-      {/* <div className={styles.filterCategory}>
-        <h3>Location</h3>
-       
-      </div> */}
-
-      {/* <div className={styles.filterCategory}>
-        <h3>Episode</h3>
-       
-      </div> */}
-
-      <div className={styles.filterCategory}>
-        <h3>Gender</h3>
-        {genders.map((option) => (
-          <label key={option.value} className={styles.filterOption}>
-            <input
-              type="radio"
-              name="gender"
-              value={option.value}
-              checked={selectedGender === option.value}
-              onChange={(e) => setSelectedGender(e.target.value)}
-            />
-            {option.label}
-          </label>
-        ))}
-      </div>
-
-      <div className={styles.filterCategory}>
-        <h3>Species</h3>
-        {species.map((option) => (
-          <label key={option.value} className={styles.filterOption}>
-            <input
-              type="radio"
-              name="species"
-              value={option.value}
-              checked={selectedSpecies === option.value}
-              onChange={(e) => setSelectedSpecies(e.target.value)}
-            />
-            {option.label}
-          </label>
-        ))}
-      </div>
-
-      {/* <div className={styles.filterCategory}>
-        <h3>Type</h3>
-        {types.map((option) => (
-          <label key={option.value} className={styles.filterOption}>
-            <input
-              type="radio"
-              name="type"
-              value={option.value}
-              checked={selectedType === option.value}
-              onChange={() => handleChange("type", option.value)}
-            />
-            {option.label}
-          </label>
-        ))}
-      </div> */}
-    </div>
+    </>
   );
 };
 

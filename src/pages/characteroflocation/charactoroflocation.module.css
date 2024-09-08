@@ -22,6 +22,7 @@ align-items: center;
 flex-direction: column;
 box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 padding:10px 0px;
+border-radius: 10px;
 }
 
 .character_image{
@@ -49,7 +50,8 @@ align-items: center;
 }
 
 .button{
-  background-color: blue;
+  background-color: #06b6d4;
+  /* background-color: blue; */
   color:white;
   padding:10px 30px;
   font-size: 18px;
@@ -57,4 +59,35 @@ align-items: center;
   border:none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  /* Styles for small mobile devices */
+  .character_wrapper{
+grid-template-columns: repeat(1,1fr);
+
+
+  }
+
+}
+
+
+@media (min-width: 481px) and (max-width: 768px) {
+  /* Styles for tablets and medium devices */
+  .character_wrapper{
+grid-template-columns: repeat(2,1fr);
+
+
+  }
+}
+
+
+@media (min-width: 769px) {
+  /* Styles for desktop and larger devices */
+
+  .character_wrapper{
+grid-template-columns: repeat(3,1fr);
+
+
+  }
 }

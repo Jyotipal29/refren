@@ -7,7 +7,6 @@ import Spinner from "../../components/spinner";
 const EpisodeList = () => {
   const [search, setSearch] = useState("");
   const { episodess, setPage, hasMore, loading } = useFetchEpisodes();
-  console.log(episodess, "episodes");
 
   const handleScroll = () => {
     // Get the scrollable height, current scroll position, and the window height
@@ -18,7 +17,6 @@ const EpisodeList = () => {
     // Check if the user has scrolled close to the bottom (with some margin)
     if (scrollTop + clientHeight >= scrollHeight - 5) {
       if (hasMore && !loading) {
-        console.log("here");
         setPage((prevPage) => prevPage + 1);
       }
     }
@@ -28,10 +26,9 @@ const EpisodeList = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasMore, loading]);
-  console.log(loading);
 
-  const filteredEpisodes = episodess.filter((episode: Episode) =>
-    episode.name.toLowerCase().includes(search.trim().toLowerCase())
+  const filteredEpisodes = episodess?.filter((episode: Episode) =>
+    episode?.name?.toLowerCase().includes(search?.trim().toLowerCase())
   );
 
   return (
@@ -46,7 +43,7 @@ const EpisodeList = () => {
       <Spinner loading={loading} />
 
       <div className={Style.episode_wrapper}>
-        {filteredEpisodes.map((episode: Episode, index: number) => (
+        {filteredEpisodes?.map((episode: Episode, index: number) => (
           <div key={index} className={Style.episode_card}>
             <p className={Style.episode_card_name}>{episode?.name}</p>
 
@@ -59,8 +56,6 @@ const EpisodeList = () => {
           </div>
         ))}
       </div>
-
-      {loading && <div>loading......</div>}
     </div>
   );
 };

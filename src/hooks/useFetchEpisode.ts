@@ -1,27 +1,40 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-export const useFetchEpisode = (episodeUrl: string[]) => {
+export const useFetchEpisode = (character: User) => {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     const getEpisodes = async () => {
       try {
         setLoading(true);
-        const responses = await Promise.all(
-          episodeUrl?.map((url) => axios.get(url))
-        );
-        const episodeData = responses?.map((res) => res?.data);
-        setEpisodes(episodeData);
-        setLoading(false);
+        if (character && character?.episode && character?.episode?.length) {
+          const episodeUrl = character?.episode;
+          const episodeIds = episodeUrl?.map((url) => {
+            const parts = url?.split("/");
+            return parseInt(parts[parts?.length - 1], 10);
+          });
+
+          const responses = await axios.get(
+            `https://rickandmortyapi.com/api/episode/${episodeIds}`
+          );
+
+          if (!Array.isArray(responses?.data)) {
+            setEpisodes([responses?.data]);
+          } else {
+            setEpisodes(responses?.data);
+          }
+
+          setLoading(false);
+        }
       } catch (err) {
         console.log(err);
         setLoading(false);
       }
     };
-    if (episodeUrl?.length > 0) {
+    if (character && character?.episode && character?.episode?.length > 0) {
       getEpisodes();
     }
-  }, [episodeUrl]);
+  }, [character]);
 
   return {
     episodes,
@@ -35,7 +48,6 @@ export const useFetchEpisodes = () => {
 
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState<boolean>(false);
-  console.log(page, "page");
   useEffect(() => {
     const getEpisodes = async () => {
       if (loading) return;
@@ -47,7 +59,6 @@ export const useFetchEpisodes = () => {
           `https://rickandmortyapi.com/api/episode?page=${page}`
         );
 
-        console.log(res, "res");
         setEpisodess((prevEpisode) => [...prevEpisode, ...res.data.results]);
 
         // If there are no more pages, set `hasMore` to false

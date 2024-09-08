@@ -8,10 +8,9 @@ const LocationList = () => {
   const { locations, setPage, hasMore, loading } = useFetchLocations();
   const [search, setSearch] = useState("");
 
-  console.log(locations);
 
   const filteredLocations = locations?.filter((location: Locations) =>
-    location.name.toLowerCase().includes(search.trim().toLowerCase())
+    location?.name?.toLowerCase().includes(search?.trim().toLowerCase())
   );
 
   const handleScroll = () => {
@@ -41,7 +40,7 @@ const LocationList = () => {
       <Spinner loading={loading} />
 
       <div className={Style.episode_wrapper}>
-        {filteredLocations.map((location: Locations, index: number) => (
+        {filteredLocations?.map((location: Locations, index: number) => (
           <div key={index} className={Style.episode_card}>
             <p className={Style.episode_card_name}>{location?.name}</p>
             <Link

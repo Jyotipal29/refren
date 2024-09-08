@@ -42,7 +42,6 @@ export const useFetchLocations = () => {
         const response = await axios.get(
           `https://rickandmortyapi.com/api/location?page=${page}`
         );
-        // setLocations(response?.data?.results);
 
         setLocations((prevLocation) => [
           ...prevLocation,
